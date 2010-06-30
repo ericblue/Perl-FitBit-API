@@ -1,0 +1,83 @@
+NAME
+
+FitbitClient - OO Perl API used to fetch fitness data from fitbit.com
+
+SYNOPSIS
+
+Sample Usage:
+
+    use FitbitClient;
+    
+    my $fb = new FitbitClient(
+        # Available from fitbit profile URL
+        user_id => "XXXNSD",
+        # Populated by cookie
+        sid     => "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+        uid     => "12345",
+        uis     => "XXX%3D"
+    );
+    
+    OR
+    
+    my $fb = new FitbitClient(config => 'conf/fitbit.conf');
+    
+    # No date defaults to today
+    my @log = $fb->get_calories_log();
+    foreach (@log) {
+        print "time = $_->{time} : calories = $_->{value}\n";
+    }
+    
+    print "calories = " . $fb->total_calories("2010-05-03") . "\n";
+    print "activescore = " . $fb->total_active_score("2010-05-03") . "\n";
+    print "steps = " . $fb->total_steps("2010-05-03") . "\n";
+
+DESCRIPTION
+
+FitbitClient provides an OO API for fetching fitness data from fitbit.com. Currently there is no official API, however data is retrieved using XML feeds that populate the flash-based charts.
+
+Intraday (5min and 1min intervals) logs are provide for:
+
+ - calories burned
+ - activity score
+ - steps taken
+ - sleep activity (every 1 min)
+
+Historical (aggregate) info is provided for:
+
+ - calories burned / consumed
+ - activity score
+ - steps taken
+ - distance travels (miles)
+ - sleep (total time in hours, and times awoken)
+
+METHODS
+
+See method comments for detailed API info:
+
+Note that all detailed log methods (get_*) and historical (total_*) accept a single data parameter (format = YYYY-MM-DD). If no date is supplied, today's date will be used.
+
+EXAMPLE CODE
+
+See test_client.pl and dump_csv.pl
+
+KNOWN_ISSUES
+
+At this time, if you attempt to tally the intraday (5min) logs for the total daily number, this number will NOT match the number from the total_*_ API call. This is due to the way that FitBit feeds 
+the intraday values via XML to the flash-graph chart. All numbers are whole numbers, and this rounding issue causes the detailed log tally to be between 10-100 points higher.
+
+For example:
+
+    # Calling total = 2122
+    print "Total calories burned = " . $fb->total_calories()->{burned} . "\n";
+   
+    # Tallying total from log entries = 2157
+    my $total = 0;
+    $total += $_->{value} foreach ( $fb->get_calories_log($date) );
+
+AUTHOR
+
+Eric Blue <ericblue76@gmail.com> - http://eric-blue.com
+
+COPYRIGHT
+
+Copyright (c) 2010 Eric Blue. This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.

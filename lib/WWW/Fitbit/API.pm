@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+package WWW::Fitbit::API;
 
 # $Id: FitbitClient.pm,v 1.5 2010-05-12 03:43:40 ericblue76 Exp $
 #
@@ -6,8 +6,6 @@
 # Project:      Perl Fitbit API
 # Url:          http://eric-blue.com/projects/fitbit
 #
-
-package WWW::Fitbit::API;
 
 use LWP::UserAgent;
 use HTTP::Request;

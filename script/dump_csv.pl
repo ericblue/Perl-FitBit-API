@@ -27,7 +27,7 @@ qq{DATE,BURNED,CONSUMED,SCORE,STEPS,DISTANCE,ACTIVE_VERY,ACTIVE_FAIR,ACTIVE_LIGH
 print TOTALS_CSV "\n";
 
 for ( my $i = 0 ; $i < $total_days ; $i++ ) {
-    $previous_day = strftime( "%F", localtime( time - $day ) );
+    my $previous_day = strftime( "%F", localtime( time - $day ) );
     print "Getting data for $previous_day ...\n";
 
     print TOTALS_CSV $previous_day . ",";

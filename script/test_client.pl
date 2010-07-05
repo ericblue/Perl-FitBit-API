@@ -7,9 +7,9 @@
 # Url:          http://eric-blue.com/projects/fitbit
 #
 
-use FitbitClient;
+use WWW::Fitbit::API;
 
-my $fb = new FitbitClient( config => 'conf/fitbit.conf' );
+my $fb = new WWW::Fitbit::API( config => 'conf/fitbit.conf' );
 
 print "Total calories burned = " . $fb->total_calories()->{burned} . "\n";
 print "Total calories consumed = " . $fb->total_calories()->{consumed} . "\n";

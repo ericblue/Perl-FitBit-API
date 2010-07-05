@@ -7,10 +7,10 @@
 # Url:          http://eric-blue.com/projects/fitbit
 #
 
-use FitbitClient;
+use WWW::Fitbit::API;
 use POSIX;
 
-my $fb = new FitbitClient( config => 'conf/fitbit.conf' );
+my $fb = new WWW::Fitbit::API( config => 'conf/fitbit.conf' );
 
 my $day        = 86400;    # 1 day
 my $total_days = 7;

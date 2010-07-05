@@ -7,7 +7,7 @@
 # Url:          http://eric-blue.com/projects/fitbit
 #
 
-package FitbitClient;
+package WWW::Fitbit::API;
 
 use LWP::UserAgent;
 use HTTP::Request;
@@ -26,7 +26,7 @@ $VERSION = '0.1';
 
 #################################################################
 # Title         : new (public)
-# Usage         : my $fb = new FitbitClient();
+# Usage         : my $fb = new WWW::Fitbit::API();
 # Purpose       : Constructor
 # Parameters    : user_id (url profile), uid, uis, sid (cookies)
 # Returns       : Blessed class
@@ -408,13 +408,13 @@ sub _request_graph_xml {
     if ( !defined $type_map->{$graph_type} ) {
         croak "$graph_type is not a valid graph type!";
     }
-    
+
     # TODO Add methods for sleep; need to solve day-boundary problem (see python code)
-    
+
     # TODO Add second parameter (duration in days) to fetch multiple days worth of data
     # in a single request (avoiding multiple HTTP Requests).  This would change duration
     # from 1d to 1m
-    
+
     # TODO Add support for getting weight info
 
     my $base_params = {
@@ -609,15 +609,15 @@ __END__
 
 =head1 NAME
 
-FitbitClient - OO Perl API used to fetch fitness data from fitbit.com
+WWW::Fitbit::API - OO Perl API used to fetch fitness data from fitbit.com
 
 =head1 SYNOPSIS
 
 Sample Usage:
 
-    use FitbitClient;
-    
-    my $fb = new FitbitClient(
+    use WWW::Fitbit::API;
+
+    my $fb = new WWW::Fitbit::API(
         # Available from fitbit profile URL
         user_id => "XXXNSD",
         # Populated by cookie
@@ -625,17 +625,17 @@ Sample Usage:
         uid     => "12345",
         uis     => "XXX%3D"
     );
-    
+
     OR
-    
-    my $fb = new FitbitClient(config => 'conf/fitbit.conf');
-    
+
+    my $fb = new WWW::Fitbit::API(config => 'conf/fitbit.conf');
+
     # No date defaults to today
     my @log = $fb->get_calories_log();
     foreach (@log) {
         print "time = $_->{time} : calories = $_->{value}\n";
     }
-    
+
     print "calories = " . $fb->total_calories("2010-05-03") . "\n";
     print "activescore = " . $fb->total_active_score("2010-05-03") . "\n";
     print "steps = " . $fb->total_steps("2010-05-03") . "\n";
@@ -643,9 +643,9 @@ Sample Usage:
 =head1 DESCRIPTION
 
 
-C<FitbitClient> provides an OO API for fetching fitness data from fitbit.com.  
+C<WWW::Fitbit::API> provides an OO API for fetching fitness data from fitbit.com.
 Currently there is no official API, however data is retrieved using XML feeds
-that populate the flash-based charts.  
+that populate the flash-based charts.
 
 Intraday (5min and 1min intervals) logs are provide for:
 
@@ -679,7 +679,7 @@ See test_client.pl and dump_csv.pl
 At this time, if you attempt to tally the intraday (5min) logs for
 the total daily number, this number will NOT match the number from
 the total_*_ API call.  This is due to the way that FitBit feeds the
-intraday values via XML to the flash-graph chart.  All numbers are 
+intraday values via XML to the flash-graph chart.  All numbers are
 whole numbers, and this rounding issue causes the detailed log
 tally to be between 10-100 points higher.
 
@@ -687,7 +687,7 @@ For example:
 
     # Calling total = 2122
     print "Total calories burned = " . $fb->total_calories()->{burned} . "\n";
-   
+
     # Tallying total from log entries = 2157
     my $total = 0;
     $total += $_->{value} foreach ( $fb->get_calories_log($date) );

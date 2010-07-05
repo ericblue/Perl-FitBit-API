@@ -10,7 +10,7 @@
 use WWW::Fitbit::API;
 use POSIX;
 
-my $fb = new WWW::Fitbit::API( config => 'conf/fitbit.conf' );
+my $fb = WWW::Fitbit::API->new( config => 'conf/fitbit.conf' );
 
 my $day        = 86400;    # 1 day
 my $total_days = 7;

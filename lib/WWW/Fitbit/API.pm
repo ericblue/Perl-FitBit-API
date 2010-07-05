@@ -26,7 +26,7 @@ $VERSION = '0.1';
 
 #################################################################
 # Title         : new (public)
-# Usage         : my $fb = new WWW::Fitbit::API();
+# Usage         : my $fb = WWW::Fitbit::API->new();
 # Purpose       : Constructor
 # Parameters    : user_id (url profile), uid, uis, sid (cookies)
 # Returns       : Blessed class
@@ -361,7 +361,7 @@ sub _request_http {
     $self->{_logger}->debug("URL = $url");
 
     # Note that user agent also uses cookie jar created on initialization
-    my $request = new HTTP::Request 'GET', $url;
+    my $request = HTTP::Request->new('GET', $url);
     my $response = $self->{_ua}->request($request);
 
     if ( !$response->is_success ) {
@@ -617,7 +617,7 @@ Sample Usage:
 
     use WWW::Fitbit::API;
 
-    my $fb = new WWW::Fitbit::API(
+    my $fb = WWW::Fitbit::API->new(
         # Available from fitbit profile URL
         user_id => "XXXNSD",
         # Populated by cookie
@@ -628,7 +628,7 @@ Sample Usage:
 
     OR
 
-    my $fb = new WWW::Fitbit::API(config => 'conf/fitbit.conf');
+    my $fb = WWW::Fitbit::API->new(config => 'conf/fitbit.conf');
 
     # No date defaults to today
     my @log = $fb->get_calories_log();

@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+
 # $Id: dump_csv.pl,v 1.2 2010-05-12 03:50:57 ericblue76 Exp $
 #
 # Author:       Eric Blue - ericblue76@gmail.com

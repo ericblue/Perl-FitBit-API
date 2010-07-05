@@ -7,6 +7,9 @@ package WWW::Fitbit::API;
 # Url:          http://eric-blue.com/projects/fitbit
 #
 
+use strict;
+use warnings;
+
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Cookies;
@@ -17,7 +20,6 @@ use Log::Log4perl qw(:easy);
 
 use POSIX;
 use Carp;
-use strict;
 use vars qw( $VERSION );
 
 $VERSION = '0.1';

@@ -55,7 +55,7 @@ sub new {
     else {
         my @required_params = qw[uis uid sid user_id];
         foreach (@required_params) {
-            croak "$_ is a required parameter!"
+            confess "$_ is a required parameter!"
               if !defined $params{$_};
         }
         $self->{_uis}     = $params{'uis'};
@@ -82,12 +82,12 @@ sub _load_fitbit_config {
     my ($filename) = @_;
 
     $/ = "";
-    open( CONFIG, "$filename" ) or die "Can't open config $filename!";
+    open( CONFIG, "$filename" ) or confess "Can't open config $filename!";
     my $config_file = <CONFIG>;
     close(CONFIG);
     undef $/;
 
-    my $config = eval($config_file) or die "Invalid config file format!";
+    my $config = eval($config_file) or confess "Invalid config file format!";
 
     return $config;
 
@@ -288,7 +288,7 @@ sub total_sleep_time {
 # Usage         : $self->_check_date_format($date)
 # Purpose       : Verify valid date format is supplied
 # Parameters    : date
-# Returns       : 1 (true) ; croak on error
+# Returns       : 1 (true) ; confess on error
 
 sub _check_date_format {
 
@@ -297,7 +297,7 @@ sub _check_date_format {
 
     # Very basic regex to check date format
     if ( $date !~ /(\d{4})-(\d{2})-(\d{2})/ ) {
-        croak "Invalid date format [$date].  Expected (YYYY-MM-DD)";
+        confess "Invalid date format [$date].  Expected (YYYY-MM-DD)";
     }
 
     return 1;
@@ -366,7 +366,7 @@ sub _request_http {
     if ( !$response->is_success ) {
         $self->{_logger}
           ->info( "HTTP status = ", Dumper( $response->status_line ) );
-        die "Couldn't get graph data; reason = HTTP status ($response->{_rc})!";
+        confess "Couldn't get graph data; reason = HTTP status ($response->{_rc})!";
     }
 
     return $response->content;
@@ -405,7 +405,7 @@ sub _request_graph_xml {
     };
 
     if ( !defined $type_map->{$graph_type} ) {
-        croak "$graph_type is not a valid graph type!";
+        confess "$graph_type is not a valid graph type!";
     }
 
     # TODO Add methods for sleep; need to solve day-boundary problem (see python code)
@@ -465,7 +465,7 @@ sub _parse_graph_xml {
 
     eval { $graph_data = XMLin( $xml, keyattr => [] ); };
     if ($@) {
-        die "$$: XMLin() died: $@\n";
+        confess "$$: XMLin() died: $@\n";
     }
 
     my @entries;

@@ -10,18 +10,17 @@ package WWW::Fitbit::API;
 use strict;
 use warnings;
 
-use LWP::UserAgent;
-use HTTP::Request;
-use HTTP::Cookies;
-use Date::Parse;
-use Data::Dumper;
-use XML::Simple;
-use Log::Log4perl qw(:easy);
-
-use POSIX;
 use Carp;
-use vars qw( $VERSION );
+use Data::Dumper;
+use Date::Parse;
+use HTTP::Cookies;
+use HTTP::Request;
+use LWP::UserAgent;
+use Log::Log4perl qw(:easy);
+use POSIX;
+use XML::Simple;
 
+use vars qw( $VERSION );
 $VERSION = '0.1';
 
 #################################################################

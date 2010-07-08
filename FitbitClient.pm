@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-# $Id: FitbitClient.pm,v 1.5 2010-05-12 03:43:40 ericblue76 Exp $
 #
 # Author:       Eric Blue - ericblue76@gmail.com
 # Project:      Perl Fitbit API

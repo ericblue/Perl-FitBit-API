@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+package WWW::Fitbit::API;
 
 #
 # Author:       Eric Blue - ericblue76@gmail.com
@@ -6,26 +6,25 @@
 # Url:          http://eric-blue.com/projects/fitbit
 #
 
-package FitbitClient;
-
-use LWP::UserAgent;
-use HTTP::Request;
-use HTTP::Cookies;
-use Date::Parse;
-use Data::Dumper;
-use XML::Simple;
-use Log::Log4perl qw(:easy);
-
-use POSIX;
-use Carp;
 use strict;
-use vars qw( $VERSION );
+use warnings;
 
+use Carp;
+use Data::Dumper;
+use Date::Parse;
+use HTTP::Cookies;
+use HTTP::Request;
+use LWP::UserAgent;
+use Log::Log4perl qw(:easy);
+use POSIX;
+use XML::Simple;
+
+use vars qw( $VERSION );
 $VERSION = '0.1';
 
 #################################################################
 # Title         : new (public)
-# Usage         : my $fb = new FitbitClient();
+# Usage         : my $fb = WWW::Fitbit::API->new();
 # Purpose       : Constructor
 # Parameters    : user_id (url profile), uid, uis, sid (cookies)
 # Returns       : Blessed class
@@ -55,7 +54,7 @@ sub new {
     else {
         my @required_params = qw[uis uid sid user_id];
         foreach (@required_params) {
-            croak "$_ is a required parameter!"
+            confess "$_ is a required parameter!"
               if !defined $params{$_};
         }
         $self->{_uis}     = $params{'uis'};
@@ -82,12 +81,12 @@ sub _load_fitbit_config {
     my ($filename) = @_;
 
     $/ = "";
-    open( CONFIG, "$filename" ) or die "Can't open config $filename!";
+    open( CONFIG, "$filename" ) or confess "Can't open config $filename!";
     my $config_file = <CONFIG>;
     close(CONFIG);
     undef $/;
 
-    my $config = eval($config_file) or die "Invalid config file format!";
+    my $config = eval($config_file) or confess "Invalid config file format!";
 
     return $config;
 
@@ -288,7 +287,7 @@ sub total_sleep_time {
 # Usage         : $self->_check_date_format($date)
 # Purpose       : Verify valid date format is supplied
 # Parameters    : date
-# Returns       : 1 (true) ; croak on error
+# Returns       : 1 (true) ; confess on error
 
 sub _check_date_format {
 
@@ -297,7 +296,7 @@ sub _check_date_format {
 
     # Very basic regex to check date format
     if ( $date !~ /(\d{4})-(\d{2})-(\d{2})/ ) {
-        croak "Invalid date format [$date].  Expected (YYYY-MM-DD)";
+        confess "Invalid date format [$date].  Expected (YYYY-MM-DD)";
     }
 
     return 1;
@@ -360,13 +359,13 @@ sub _request_http {
     $self->{_logger}->debug("URL = $url");
 
     # Note that user agent also uses cookie jar created on initialization
-    my $request = new HTTP::Request 'GET', $url;
+    my $request = HTTP::Request->new('GET', $url);
     my $response = $self->{_ua}->request($request);
 
     if ( !$response->is_success ) {
         $self->{_logger}
           ->info( "HTTP status = ", Dumper( $response->status_line ) );
-        die "Couldn't get graph data; reason = HTTP status ($response->{_rc})!";
+        confess "Couldn't get graph data; reason = HTTP status ($response->{_rc})!";
     }
 
     return $response->content;
@@ -405,15 +404,15 @@ sub _request_graph_xml {
     };
 
     if ( !defined $type_map->{$graph_type} ) {
-        croak "$graph_type is not a valid graph type!";
+        confess "$graph_type is not a valid graph type!";
     }
-    
+
     # TODO Add methods for sleep; need to solve day-boundary problem (see python code)
-    
+
     # TODO Add second parameter (duration in days) to fetch multiple days worth of data
     # in a single request (avoiding multiple HTTP Requests).  This would change duration
     # from 1d to 1m
-    
+
     # TODO Add support for getting weight info
 
     my $base_params = {
@@ -465,7 +464,7 @@ sub _parse_graph_xml {
 
     eval { $graph_data = XMLin( $xml, keyattr => [] ); };
     if ($@) {
-        die "$$: XMLin() died: $@\n";
+        confess "$$: XMLin() died: $@\n";
     }
 
     my @entries;
@@ -608,15 +607,15 @@ __END__
 
 =head1 NAME
 
-FitbitClient - OO Perl API used to fetch fitness data from fitbit.com
+WWW::Fitbit::API - OO Perl API used to fetch fitness data from fitbit.com
 
 =head1 SYNOPSIS
 
 Sample Usage:
 
-    use FitbitClient;
-    
-    my $fb = new FitbitClient(
+    use WWW::Fitbit::API;
+
+    my $fb = WWW::Fitbit::API->new(
         # Available from fitbit profile URL
         user_id => "XXXNSD",
         # Populated by cookie
@@ -624,17 +623,17 @@ Sample Usage:
         uid     => "12345",
         uis     => "XXX%3D"
     );
-    
+
     OR
-    
-    my $fb = new FitbitClient(config => 'conf/fitbit.conf');
-    
+
+    my $fb = WWW::Fitbit::API->new(config => 'conf/fitbit.conf');
+
     # No date defaults to today
     my @log = $fb->get_calories_log();
     foreach (@log) {
         print "time = $_->{time} : calories = $_->{value}\n";
     }
-    
+
     print "calories = " . $fb->total_calories("2010-05-03") . "\n";
     print "activescore = " . $fb->total_active_score("2010-05-03") . "\n";
     print "steps = " . $fb->total_steps("2010-05-03") . "\n";
@@ -642,9 +641,9 @@ Sample Usage:
 =head1 DESCRIPTION
 
 
-C<FitbitClient> provides an OO API for fetching fitness data from fitbit.com.  
+C<WWW::Fitbit::API> provides an OO API for fetching fitness data from fitbit.com.
 Currently there is no official API, however data is retrieved using XML feeds
-that populate the flash-based charts.  
+that populate the flash-based charts.
 
 Intraday (5min and 1min intervals) logs are provide for:
 
@@ -678,7 +677,7 @@ See test_client.pl and dump_csv.pl
 At this time, if you attempt to tally the intraday (5min) logs for
 the total daily number, this number will NOT match the number from
 the total_*_ API call.  This is due to the way that FitBit feeds the
-intraday values via XML to the flash-graph chart.  All numbers are 
+intraday values via XML to the flash-graph chart.  All numbers are
 whole numbers, and this rounding issue causes the detailed log
 tally to be between 10-100 points higher.
 
@@ -686,7 +685,7 @@ For example:
 
     # Calling total = 2122
     print "Total calories burned = " . $fb->total_calories()->{burned} . "\n";
-   
+
     # Tallying total from log entries = 2157
     my $total = 0;
     $total += $_->{value} foreach ( $fb->get_calories_log($date) );

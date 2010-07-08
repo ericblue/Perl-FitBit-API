@@ -1,15 +1,18 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+
 #
 # Author:       Eric Blue - ericblue76@gmail.com
 # Project:      Perl Fitbit API - CSV export
 # Url:          http://eric-blue.com/projects/fitbit
 #
 
-use FitbitClient;
+use WWW::Fitbit::API;
 use POSIX;
 
-my $fb = new FitbitClient( config => 'conf/fitbit.conf' );
+my $fb = WWW::Fitbit::API->new( config => 'conf/fitbit.conf' );
 
 my $day        = 86400;    # 1 day
 my $total_days = 7;
@@ -23,7 +26,7 @@ qq{DATE,BURNED,CONSUMED,SCORE,STEPS,DISTANCE,ACTIVE_VERY,ACTIVE_FAIR,ACTIVE_LIGH
 print TOTALS_CSV "\n";
 
 for ( my $i = 0 ; $i < $total_days ; $i++ ) {
-    $previous_day = strftime( "%F", localtime( time - $day ) );
+    my $previous_day = strftime( "%F", localtime( time - $day ) );
     print "Getting data for $previous_day ...\n";
 
     print TOTALS_CSV $previous_day . ",";

@@ -1,14 +1,17 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+
 #
 # Author:       Eric Blue - ericblue76@gmail.com
 # Project:      Perl Fitbit API - client test script
 # Url:          http://eric-blue.com/projects/fitbit
 #
 
-use FitbitClient;
+use WWW::Fitbit::API;
 
-my $fb = new FitbitClient( config => 'conf/fitbit.conf' );
+my $fb = WWW::Fitbit::API->new( config => 'conf/fitbit.conf' );
 
 print "Total calories burned = " . $fb->total_calories()->{burned} . "\n";
 print "Total calories consumed = " . $fb->total_calories()->{consumed} . "\n";

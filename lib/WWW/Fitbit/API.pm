@@ -400,7 +400,8 @@ sub _request_graph_xml {
         'distance_historical'     => 'distanceFromSteps',
         'steps_historical'        => 'stepsTaken',
         'sleep_time_historical'   => 'timeAsleep',
-        'wakeup_historical'       => 'timesWokenUp'
+        'wakeup_historical'       => 'timesWokenUp',
+        'weight_historical'       => 'weight'
     };
 
     if ( !defined $type_map->{$graph_type} ) {
@@ -549,6 +550,13 @@ sub _parse_graph_xml {
             my $total_wakes = $v[1];
             push( @entries, $total_wakes );
 
+        }
+        if ( $graph_type eq "weight_historical" ) {
+            # Sample description: "80.5 kg on Mon, Jan 1"
+            my @v = split / /,
+              $graph_data->{data}{chart}{graphs}{graph}{value}{description};
+            my $weight = $v[0];
+            push( @entries, $weight );
         }
         if ( $graph_type eq "steps_historical" ) {
 

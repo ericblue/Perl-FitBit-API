@@ -204,6 +204,24 @@ sub get_step_log {
 }
 
 #################################################################
+# Title         : get_weight_log (public)
+# Usage         : $self->get_weight_log($date)
+# Purpose       : Displays weight in 1d intervals
+# Parameters    : date = YYYY-MM-DD (optional; default = today)
+# Returns       : Hash ref; keys = time, value
+#                 values = YYYY-MM-DD HH:MM[A|P]M, decimal
+
+sub get_weight_log {
+
+    my $self = shift;
+
+    my ($date) = @_;
+
+    return $self->_parse_graph_xml( "weight_historical", $date );
+
+}
+
+#################################################################
 # Title         : get_sleep_log (public)
 # Usage         : $self->get_sleep_log($date)
 # Purpose       : Displays total sleep in 1min intervals

@@ -476,7 +476,7 @@ sub _parse_graph_xml {
 
     defined $date ? $self->_check_date_format($date) : $date =
       $self->_get_date();
-    $self->{_logger}->info("Getting calories burned for date $date");
+    $self->{_logger}->info("Getting $graph_type for date $date");
 
     my $xml = $self->_request_graph_xml( $graph_type, $date );
     my $graph_data;
@@ -572,8 +572,9 @@ sub _parse_graph_xml {
         if ( $graph_type eq "weight_historical" ) {
             # Sample description: "80.5 kg on Mon, Jan 1"
             my @v = split / /,
-              $graph_data->{data}{chart}{graphs}{graph}{value}{description};
+              $graph_data->{data}{chart}{graphs}{graph}[0]{value}[1]{description};
             my $weight = $v[0];
+            $self->{_logger}->debug("weight = $weight");
             push( @entries, $weight );
         }
         if ( $graph_type eq "steps_historical" ) {
@@ -727,5 +728,4 @@ software; you can redistribute it and/or modify it under the same terms
 as Perl itself.
 
 =cut
-
 

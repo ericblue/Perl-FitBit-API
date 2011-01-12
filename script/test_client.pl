@@ -10,6 +10,7 @@ use warnings;
 #
 
 use WWW::Fitbit::API;
+use Data::Dumper;
 
 my $fb = WWW::Fitbit::API->new( config => 'conf/fitbit.conf' );
 
@@ -32,4 +33,4 @@ print "active hours = very[$ah->{very}], fair[$ah->{fairly}], light[$ah->{lightl
 my $st = $fb->total_sleep_time("2010-05-01");
 print "sleep = hours[$st->{hours_asleep}], wakes[$st->{wakes}]\n";
 
-print "weight = " . $fb->get_weight_log("2011-01-11") . "\n";
+print "weight = " . Data::Dumper($fb->get_weight_log("2011-01-11")) . "\n";

@@ -31,3 +31,6 @@ print "active hours = very[$ah->{very}], fair[$ah->{fairly}], light[$ah->{lightl
 
 my $st = $fb->total_sleep_time("2010-05-01");
 print "sleep = hours[$st->{hours_asleep}], wakes[$st->{wakes}]\n";
+
+my @weight = $fb->get_weight_log("2011-01-11");
+print "weight = $weight[0]\n";

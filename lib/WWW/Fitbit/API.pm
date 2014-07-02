@@ -204,6 +204,24 @@ sub get_step_log {
 }
 
 #################################################################
+# Title         : get_weight_log (public)
+# Usage         : $self->get_weight_log($date)
+# Purpose       : Displays weight in 1d intervals
+# Parameters    : date = YYYY-MM-DD (optional; default = today)
+# Returns       : Hash ref; keys = time, value
+#                 values = YYYY-MM-DD HH:MM[A|P]M, decimal
+
+sub get_weight_log {
+
+    my $self = shift;
+
+    my ($date) = @_;
+
+    return $self->_parse_graph_xml( "weight_historical", $date );
+
+}
+
+#################################################################
 # Title         : get_sleep_log (public)
 # Usage         : $self->get_sleep_log($date)
 # Purpose       : Displays total sleep in 1min intervals
@@ -400,7 +418,8 @@ sub _request_graph_xml {
         'distance_historical'     => 'distanceFromSteps',
         'steps_historical'        => 'stepsTaken',
         'sleep_time_historical'   => 'timeAsleep',
-        'wakeup_historical'       => 'timesWokenUp'
+        'wakeup_historical'       => 'timesWokenUp',
+        'weight_historical'       => 'weight'
     };
 
     if ( !defined $type_map->{$graph_type} ) {
@@ -457,7 +476,7 @@ sub _parse_graph_xml {
 
     defined $date ? $self->_check_date_format($date) : $date =
       $self->_get_date();
-    $self->{_logger}->info("Getting calories burned for date $date");
+    $self->{_logger}->info("Getting $graph_type for date $date");
 
     my $xml = $self->_request_graph_xml( $graph_type, $date );
     my $graph_data;
@@ -549,6 +568,14 @@ sub _parse_graph_xml {
             my $total_wakes = $v[1];
             push( @entries, $total_wakes );
 
+        }
+        if ( $graph_type eq "weight_historical" ) {
+            # Sample description: "80.5 kg on Mon, Jan 1"
+            my @v = split / /,
+              $graph_data->{data}{chart}{graphs}{graph}[0]{value}[1]{description};
+            my $weight = $v[0];
+            $self->{_logger}->debug("weight = $weight");
+            push( @entries, $weight );
         }
         if ( $graph_type eq "steps_historical" ) {
 
@@ -701,5 +728,4 @@ software; you can redistribute it and/or modify it under the same terms
 as Perl itself.
 
 =cut
-
 
